@@ -1,0 +1,5 @@
+# wrapup/api/handlers
+api/handlers/message_handler.go:54:44: cannot use connUserID (variable of type string) as type *primitive.ObjectID in argument to mh.UserService.AreFriends
+api/handlers/message_handler.go:83:33: cannot use message.RecipientID (variable of type *primitive.ObjectID) as type string in map index
+api/handlers/user_handler.go:89:48: undefined: parseUserID
+api/handlers/user_handler.go:129:38: undefined: parseUserID
