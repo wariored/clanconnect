@@ -54,4 +54,3 @@ func (ms *MessageServiceImpl) DeleteMessage(messageID primitive.ObjectID) error 
 	_, err := ms.Db.Database("wrapup-base").Collection("messages").DeleteOne(ctx, bson.M{"_id": messageID})
 	return err
 }
-

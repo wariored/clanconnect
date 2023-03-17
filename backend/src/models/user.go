@@ -14,6 +14,6 @@ type User struct {
 
 type Friend struct {
 	ID primitive.ObjectID `bson:"_id"`
-	userA *User `bson:"userA"`
-	userB *User `bson:"userB"`
+	userA primitive.ObjectID  `bson:"userA"`
+	userB primitive.ObjectID `bson:"userB"`
 }

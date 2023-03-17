@@ -13,10 +13,10 @@ import (
 func Router(client *database.Client) *echo.Echo {
 	e := echo.New()
 
-	userHandler :=  handlers.NewUserHandler(client)
+	userHandler := handlers.NewUserHandler(client)
 	authHandler := handlers.NewAuthHandler(client)
 	messageHandler := handlers.NewMessageHandler(client)
-		
+
 	// Authentication routes
 	e.POST("/login", authHandler.Login)
 	e.POST("/users", userHandler.CreateUser)
@@ -38,7 +38,6 @@ func Router(client *database.Client) *echo.Echo {
 	adminGroup.GET("/users", userHandler.GetAllUsers)
 	adminGroup.DELETE("/users/:userID", userHandler.DeleteUser)
 
-	
 	// websocket route
 	//e.GET("/ws/messages", websocket.Handler(messageHandler.SendMessage))
 

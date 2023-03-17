@@ -35,11 +35,11 @@ func AuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-func RoleAccessMiddleware(role string) echo.MiddlewareFunc{
+func RoleAccessMiddleware(role string) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			userRole := c.Get("userRole").(string)
-			if userRole == "" || role == ""{
+			if userRole == "" || role == "" {
 				return c.JSON(http.StatusUnauthorized, map[string]string{"error": "Not authorized"})
 			}
 			if userRole != role {
@@ -49,36 +49,34 @@ func RoleAccessMiddleware(role string) echo.MiddlewareFunc{
 		}
 	}
 }
- 
 
 func verifyToken(tokenString string) (jwt.MapClaims, error) {
-    token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-        // validate the algorithm
-        if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-            return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
-        }
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		// validate the algorithm
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
 
-        // return the secret key
-        return []byte("secret_key"), nil
-    })
+		// return the secret key
+		return []byte("secret_key"), nil
+	})
 
-    if err != nil {
-        return nil, err
-    }
+	if err != nil {
+		return nil, err
+	}
 
-    if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-        return claims, nil
-    } else {
-        return nil, fmt.Errorf("invalid token")
-    }
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		return claims, nil
+	} else {
+		return nil, fmt.Errorf("invalid token")
+	}
 }
 
-
 func DisableCORS() echo.MiddlewareFunc {
-    config := middleware.CORSConfig{
-        AllowOrigins: []string{"*"},
-        AllowMethods: []string{echo.GET, echo.POST, echo.PUT, echo.DELETE},
-    }
+	config := middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{echo.GET, echo.POST, echo.PUT, echo.DELETE},
+	}
 
-    return middleware.CORSWithConfig(config)
+	return middleware.CORSWithConfig(config)
 }

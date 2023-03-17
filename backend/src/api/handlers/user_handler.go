@@ -9,7 +9,6 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type UserLoginRequest struct {
@@ -17,42 +16,33 @@ type UserLoginRequest struct {
 	Password string `json:"password"`
 }
 
-
 type UserRegistrationRequest struct {
-    Username string `json:"username"`
-    Password string `json:"password"`
-    Email    string `json:"email"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Email    string `json:"email"`
 }
 
 type UserUpdateRequest struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
-	Email string `json:"email"` 
-	Role string `json:"role"`
+	Email    string `json:"email"`
+	Role     string `json:"role"`
 }
 
 type UserResponse struct {
-	ID string `json:"id"`
+	ID       string `json:"id"`
 	Username string `json:"username"`
-	Email string `json:"email"`
-	Role string `json:"role"`
+	Email    string `json:"email"`
+	Role     string `json:"role"`
 }
-
 
 type UserHandler struct {
 	services.UserService
 }
 
 func NewUserHandler(db *database.Client) *UserHandler {
-    return &UserHandler{UserService: &services.UserServiceImpl{Db: db}}
+	return &UserHandler{UserService: &services.UserServiceImpl{Db: db}}
 }
-
-
-func ParseToPrimitive(str string) primitive.ObjectID {
-	parsedId, _ := primitive.ObjectIDFromHex(str)
-	return parsedId
-}
-
 
 func (uh *UserHandler) GetUser(c echo.Context) error {
 	userID := ParseToPrimitive(c.Param("userID"))
@@ -86,7 +76,7 @@ func (uh *UserHandler) UpdateUser(c echo.Context) error {
 	}
 
 	// Perform update
-	updatedUser, err := uh.UserService.UpdateUser(parseUserID(userID), updateDoc)
+	updatedUser, err := uh.UserService.UpdateUser(ParseToPrimitive(userID), updateDoc)
 	if err != nil {
 		return c.JSON(http.StatusNotFound, map[string]string{"error": "user not found"})
 	}
@@ -112,8 +102,8 @@ func (uh *UserHandler) CreateUser(c echo.Context) error {
 	user := models.User{
 		Username: userRequest.Username,
 		Password: userRequest.Password,
-		Email: userRequest.Email,
-		Role: "user",
+		Email:    userRequest.Email,
+		Role:     "user",
 	}
 	err := uh.UserService.CreateUser(&user)
 	log.Println("error: ", err)
@@ -126,7 +116,7 @@ func (uh *UserHandler) CreateUser(c echo.Context) error {
 func (uh *UserHandler) DeleteUser(c echo.Context) error {
 	userID := c.Param("userID")
 
-	if err := uh.UserService.DeleteUser(parseUserID(userID)); err != nil {
+	if err := uh.UserService.DeleteUser(ParseToPrimitive(userID)); err != nil {
 		return c.JSON(http.StatusNotFound, "user not found")
 	}
 	return c.JSON(http.StatusOK, "user deleted successfully")
@@ -135,17 +125,17 @@ func (uh *UserHandler) DeleteUser(c echo.Context) error {
 func (uh *UserHandler) GetAllUsers(c echo.Context) error {
 	log.Println("ok ok ok")
 	users, err := uh.UserService.GetAllUsers()
-	if err != nil { 
+	if err != nil {
 		return c.JSON(http.StatusInternalServerError, "error fetching users from database")
 	}
 
 	var userResponses []UserResponse
 	for _, user := range users {
 		userResponses = append(userResponses, UserResponse{
-			ID: user.ID.Hex(),
+			ID:       user.ID.Hex(),
 			Username: user.Username,
-			Email: user.Email,
-			Role: user.Role,
+			Email:    user.Email,
+			Role:     user.Role,
 		})
 	}
 

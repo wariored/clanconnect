@@ -38,4 +38,3 @@ func NewClient() (*Client, error) {
 func (c *Client) Disconnect(ctx context.Context) error {
 	return c.Client.Disconnect(ctx)
 }
-
