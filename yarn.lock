@@ -12,9 +12,9 @@ csstype@^3.1.0:
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.1.1.tgz#841b532c45c758ee546a11d5bd7b7b473c8c30b9"
   integrity sha512-DJR/VvkAvSZW9bTouZue2sSxDwdTN92uHjqeKVm+0dAqdfNykRzQ95tay8aXMBAAPpUiq4Qcug2L7neoRh2Egw==
 
-solid-js@^1.6.14:
-  version "1.6.14"
-  resolved "https://registry.yarnpkg.com/solid-js/-/solid-js-1.6.14.tgz#8946bce073f9baf723c2f5eae6820452715140b7"
-  integrity sha512-9SSpGWZqzq8n/JhIt2PsYzLreG4PySmAexLnRM386oMeG5oSWa9QIRoiok45rLNJg148USEfI9wlkJkMrA2qGg==
+solid-js@^1.6.15:
+  version "1.6.15"
+  resolved "https://registry.yarnpkg.com/solid-js/-/solid-js-1.6.15.tgz#01420bdfe19855551baf0a5eab06ea394d9a6b0b"
+  integrity sha512-xEuMUIdDf4YRFT4i3XEJCNg4Y21lZiWWPSEqj0R3UnLLpENGJVXkqpmbIyRU5CuMImKPIEu5CYgmFKL7Npfe1A==
   dependencies:
     csstype "^3.1.0"

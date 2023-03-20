@@ -73,10 +73,7 @@ func verifyToken(tokenString string) (jwt.MapClaims, error) {
 }
 
 func DisableCORS() echo.MiddlewareFunc {
-	config := middleware.CORSConfig{
-		AllowOrigins: []string{"*"},
-		AllowMethods: []string{echo.GET, echo.POST, echo.PUT, echo.DELETE},
-	}
-
-	return middleware.CORSWithConfig(config)
+	return middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"http://127.0.0.1:3000", "http://localhost:3000"},
+    })
 }

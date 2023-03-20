@@ -1,5 +1,7 @@
 import { createSignal } from "solid-js";
 import { useNavigate } from "@solidjs/router";
+import { request } from "../api/client";
+import { getAuthUser, login, setAuthUser } from "../api/auth";
 
 function Login() {
   const [username, setUsername] = createSignal("");
@@ -9,12 +11,24 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post("/login", { username, password });
-      localStorage.setItem("token", response.data.token);
+try {
+      const response = await request("POST", "/login", {
+        username: username(),
+        password: password(),
+      });
+      login(response.token);
+      console.log(response);
+
+      // Fetch user data and update store
+      const userData = await request("GET", `/users/${response.id}`);
+      console.log(userData);
+      setAuthUser(userData);
+      console.log(getAuthUser());
+
       navigate("/chat", { replace: true });
     } catch (err) {
-      setError(err.response.data.message);
+      console.log(err);
+      setError(err?.message);
     }
   };
 
@@ -25,10 +39,10 @@ function Login() {
           <div class="my-5">
             <h1 class="text-lg font-medium">Login</h1>
           </div>
-          {error && <div>{error}</div>}
+          {error() && <div>{error()}</div>}
           <div class="mb-4">
             <div>
-              <label class="font-medium" htmlFor="username">
+              <label class="font-medium" for="username">
                 Username
               </label>
               <input
@@ -36,7 +50,7 @@ function Login() {
                 id="username"
                 class="form-input mx-4 rounded-full"
                 value={username()}
-                onChange={(e) => setUsername(e.target.value)}
+                onInput={(e) => setUsername(e.target.value)}
               />
             </div>
             <div>
@@ -48,7 +62,7 @@ function Login() {
                 id="password"
                 class="form-input mx-4 my-3 rounded-full"
                 value={password()}
-                onChange={(e) => setPassword(e.target.value)}
+                onInput={(e) => setPassword(e.target.value)}
               />
             </div>
           </div>

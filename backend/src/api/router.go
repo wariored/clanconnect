@@ -1,6 +1,7 @@
 package api
 
 import (
+	"net/http"
 	"wrapup/api/handlers"
 	"wrapup/api/middlewares"
 	"wrapup/database"
@@ -24,6 +25,11 @@ func Router(client *database.Client) *echo.Echo {
 	// auth routes
 	authGroup := e.Group("")
 	authGroup.Use(middlewares.AuthMiddleware)
+	authGroup.GET("/me", func(c echo.Context) error {
+	  return c.JSON(http.StatusOK, map[string]interface{}{
+		"ok": true,
+	  })
+	})
 	authGroup.GET("/users/:userID", userHandler.GetUser)
 	authGroup.PUT("/users/:userID", userHandler.UpdateUser)
 
@@ -44,5 +50,6 @@ func Router(client *database.Client) *echo.Echo {
 	// add middleware to Echo instance
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+	e.Use(middlewares.DisableCORS())
 	return e
 }

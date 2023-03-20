@@ -2,7 +2,6 @@ import { createStore } from "solid-js/store";
 import { createSignal } from 'solid-js';
 
 const Chat = () => {
-  const [user, setUser] = createStore('user');
   const [messages, setMessages] = createSignal([]);
 
   useEffect(() => {

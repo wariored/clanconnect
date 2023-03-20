@@ -1,18 +1,22 @@
 import { apiBaseURL } from '../config';
+import {getAuthToken} from './auth';
 
-let authToken;
 
-export const setAuthToken = (token) => {
-  authToken = token;
-};
 
-export const request = async (path, options = {}) => {
-  const response = await fetch(`${apiBaseURL}/${path}`, {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: authToken ? `Bearer ${authToken}` : '',
-    },
-    ...options,
+export const request = async (method, path, data = null) => {
+  const url = `${apiBaseURL}${path}`
+  const token = getAuthToken();
+  const headers = new Headers({
+    'Content-Type': 'application/json',
+  });
+  if (token) {
+    headers.set('Authorization', `Bearer ${token}`);
+  }
+
+  const response = await fetch(url, {
+    method,
+    headers,
+    body: data && JSON.stringify(data),
   });
   if (!response.ok) {
     const error = await response.json();
@@ -20,4 +24,3 @@ export const request = async (path, options = {}) => {
   }
   return response.json();
 };
-

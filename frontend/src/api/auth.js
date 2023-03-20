@@ -1,27 +1,27 @@
-import { apiBaseURL } from '../config';
+import { createStore } from "solid-js/store";
+import userStore from '../stores/userStore';
 
-export const login = async (username, password) => {
-  const response = await fetch(`${apiBaseURL}/login`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ username, password }),
-  });
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message);
-  }
-  const { token } = await response.json();
-  return token;
+export const getAuthToken = () => localStorage.getItem("token");
+
+const [authStore, setAuthStore] = createStore({
+  isAuthenticated: !!getAuthToken()
+});
+
+export const login = (token) => {
+  localStorage.setItem("token", token);
+  setAuthStore({"isAuthenticated": true});
 };
 
-export const isLoggedIn = async () => {
-  const response = await fetch(`${apiBaseURL}/me`);
-  if (!response.ok) {
-    throw new Error('Unauthorized');
-  }
-  const user = await response.json();
-  return user;
+export const logout = () => {
+  localStorage.removeItem("token");
+  setAuthStore({"isAuthenticated": false});
+  userStore.set("user", null);
 };
+
+export const getAuthUser = () => userStore.value;
+export const setAuthUser = (data) => {
+  userStore.set(data)
+}
+// Check if the user is authenticated
+export const isAuthenticated = () => authStore.isAuthenticated;
 

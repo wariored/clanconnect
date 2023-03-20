@@ -98,10 +98,10 @@ func (mh *MessageHandler) HandleMessages(c echo.Context) error {
 func sendErrorMessage(conn *websocket.Conn, receiver *primitive.ObjectID, text string) {
 	conn.WriteJSON(map[string]interface{}{
 		"type":    "error",
-		"message": {
+		"message": map[string]interface{}  {
 			"user_id":  receiver,
 			"message": text,
-		}
+		},
 	})
 }
 
@@ -114,11 +114,11 @@ func sendPersonalMessage(conn *websocket.Conn, message *models.Message) {
 
 func sendUserStatusMessage(conn *websocket.Conn, userID primitive.ObjectID, status string) {
 	conn.WriteJSON(map[string]interface{}{
-		"type":    "user_status",
-		"message": {
+		"type": "user_status",
+		"message": map[string]interface{} {
 			"user_id": userID,
 			"status": status,
-		}
+		},
 	})
 }
 
