@@ -1,40 +1,35 @@
-import { createStore } from "solid-js/store"; 
-import { createSignal } from 'solid-js';
+import { createEffect, createSignal } from "solid-js";
+import { getAuthUser } from "../api/auth";
+import { connectWebSocket } from "../api/client";
 
 const Chat = () => {
   const [messages, setMessages] = createSignal([]);
 
-  useEffect(() => {
-    const socket = new WebSocket(`ws://localhost:8080/ws`);
-    
-    socket.onopen = () => {
-      console.log('WebSocket connected');
-    };
+  const user = getAuthUser();
 
-    socket.onclose = () => {
-      console.log('WebSocket disconnected');
-    };
+  createEffect(() => {
+    const socket = connectWebSocket("ws://localhost:8080/ws");
 
     socket.onmessage = (event) => {
-      const message = JSON.parse(event.data);
-      switch (message.type) {
-        case 'personal_message':
-          setMessages((prevMessages) => [...prevMessages, message.message]);
+      const data = JSON.parse(event.data);
+      switch (data.type) {
+        case "personal_message":
+          setMessages((prevMessages) => [...prevMessages, data.message]);
           break;
-        case 'user_status':
-          console.log(`User ${message.message.user_id} is ${message.message.status}`);
+        case "user_status":
+          console.log(`User ${data.message.user_id} is ${data.message.status}`);
           break;
-        case 'error':
-          console.error(`Error: ${message.message.message}`);
+        case "error":
+          console.error(`Error: ${data.message.text}`);
           break;
         default:
-          console.error(`Unknown message type: ${message.type}`);
+          console.error(`Unknown message type: ${data.type}`);
           break;
       }
     };
 
     return () => {
-      console.log('Closing WebSocket connection');
+      console.log("Closing WebSocket connection");
       socket.close();
     };
   }, []);
@@ -44,7 +39,9 @@ const Chat = () => {
       <h1>Welcome to the chat, {user.username}!</h1>
       <ul>
         {messages().map((message) => (
-          <li key={message.id}>{message.sender_id}: {message.text}</li>
+          <li key={message.id}>
+            {message.recipient}: {message.text}
+          </li>
         ))}
       </ul>
     </div>
@@ -52,4 +49,3 @@ const Chat = () => {
 };
 
 export default Chat;
-

@@ -2,6 +2,7 @@ package middlewares
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 
@@ -12,14 +13,21 @@ import (
 
 func AuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		// Check if Authorization header is present
-		authHeader := c.Request().Header.Get("Authorization")
-		if authHeader == "" {
+		// Try to get the token from the "Authorization" header
+		header := c.Request().Header.Get("Authorization")
+		token := strings.TrimSpace(strings.TrimPrefix(header, "Bearer"))
+
+		// If there's no token in the header, try to get it from the query parameters
+		if token == "" {
+			token = c.QueryParam("token")
+		}
+		log.Println("TOKEN SECTION")
+
+		if token == "" {
 			return c.JSON(http.StatusUnauthorized, map[string]string{"error": "Authorization header is missing"})
 		}
 
 		// Check if token is valid
-		token := strings.Replace(authHeader, "Bearer ", "", 1)
 		claims, err := verifyToken(token)
 		if err != nil {
 			return c.JSON(http.StatusUnauthorized, map[string]string{"error": err.Error()})
@@ -34,6 +42,7 @@ func AuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		return next(c)
 	}
 }
+
 
 func RoleAccessMiddleware(role string) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {

@@ -24,3 +24,33 @@ export const request = async (method, path, data = null) => {
   }
   return response.json();
 };
+
+
+
+export const connectWebSocket = (url) => {
+  let socket;
+
+  const connect = () => {
+    socket = new WebSocket(url + `?token=${getAuthToken()}`);
+
+    socket.addEventListener('open', () => {
+      console.log('WebSocket connected');
+    });
+
+    socket.addEventListener('close', () => {
+      console.log('WebSocket disconnected');
+      setTimeout(() => {
+        connect();
+      }, 2000);
+    });
+
+    socket.addEventListener('message', (event) => {
+      console.log('Message received', event.data);
+    });
+  };
+
+  connect();
+
+  return socket;
+};
+

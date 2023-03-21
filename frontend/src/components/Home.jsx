@@ -1,6 +1,6 @@
 import { A } from "@solidjs/router";
-import { createSignal, Show } from 'solid-js';
-import {isAuthenticated} from "../api/auth";
+import { createSignal, Show } from "solid-js";
+import { isAuthenticated } from "../api/auth";
 
 const Home = () => {
   const [count, setCount] = createSignal(0);
@@ -19,10 +19,11 @@ const Home = () => {
       <p>Current count: {count()}</p>
       <button onClick={handleIncrement}>+</button>
       <button onClick={handleDecrement}>-</button>
-	  <Show when={!isAuthenticated()}>
-      <p>
-        <A href="/login">Login</A> | <A href="/signup">Signup</A>
-      </p></Show>
+      <Show when={!isAuthenticated()}>
+        <p>
+          <A href="/login">Login</A> | <A href="/signup">Signup</A>
+        </p>
+      </Show>
     </div>
   );
 };

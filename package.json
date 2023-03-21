@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "@solidjs/router": "^0.8.0",
-    "solid-js": "^1.6.15"
-  }
-}
